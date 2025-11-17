@@ -20,7 +20,7 @@ class GitSeek():
     # 配置DeepSeek LLM
     llm = LLM(
         model="openai/deepseek-chat",
-        api_key=os.environ.get("sk-95994eea4c704cc68a0da02eca90c51b"),  # 建议使用环境变量
+        api_key=os.environ.get("sk-99491e7c88dc454e81aca34aad4278fd"),  # 建议使用环境变量
         base_url="https://api.deepseek.com/v1",
     )
 
@@ -198,7 +198,7 @@ class GitSeek():
                 "design_patterns": [...],
                 "recommendations": [...]
             }""",
-            context=[self.architect_task()]
+            context=[self.scout_task(),self.architect_task()]
         )
 
     @task
@@ -288,7 +288,7 @@ class GitSeek():
             ],
             process=Process.sequential,
             verbose=True,
-            memory=True,
+            memory=False,
             share_crew=True,
             # 确保任务输出可以在agents间共享
             full_output=True

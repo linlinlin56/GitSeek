@@ -42,16 +42,24 @@ class GitHubAPIReader(BaseTool):
     
     # GitHub API 基础 URL
     BASE_URL: ClassVar[str] = "https://api.github.com"
-    
+
     def _run(self, owner: str, repo: str) -> Dict[str, Any]:
         """获取基础仓库元数据"""
         try:
             url = f"{self.BASE_URL}/repos/{owner}/{repo}"
-            
+
             response = requests.get(url, headers=self._get_headers())
-            
+
             if response.status_code == 200:
                 data = response.json()
+
+                # --- 修复后的 License 逻辑 ---
+                # 检查 data["license"] 是否为 None。如果是，使用空字典 {}，否则使用 data["license"] 的值。
+                # 这样可以保证后续的 .get("name", ...) 调用在一个字典上执行。
+                license_info = data.get("license") or {}
+                license_name = license_info.get("name", "No license")
+                # -----------------------------
+
                 return {
                     "success": True,
                     "name": data["name"],
@@ -67,7 +75,10 @@ class GitHubAPIReader(BaseTool):
                     "pushed_at": data.get("pushed_at"),
                     "size": data["size"],  # KB
                     "default_branch": data["default_branch"],
-                    "license": data.get("license", {}).get("name", "No license"),
+
+                    # 使用修复后的 license_name
+                    "license": license_name,
+
                     "topics": data.get("topics", []),
                     "html_url": data["html_url"],
                     "homepage": data.get("homepage"),
@@ -81,7 +92,7 @@ class GitHubAPIReader(BaseTool):
                 return {"success": False, "error": "API rate limit exceeded. Please wait or use authentication."}
             else:
                 return {"success": False, "error": f"API request failed with status {response.status_code}"}
-                
+
         except Exception as e:
             return {"success": False, "error": f"GitHub API error: {str(e)}"}
     
