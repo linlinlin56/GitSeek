@@ -1,0 +1,108 @@
+#tasks.yaml
+scout_task:
+  description: >
+    对GitHub仓库 {repo_url} 进行初步侦察，具体任务：
+    1. 克隆指定的GitHub仓库到本地工作目录
+    2. 使用GitHub API获取项目基本元数据
+    3. 收集项目的star数量、fork数量、主要编程语言
+    4. 获取项目的详细描述和README信息
+    5. 记录项目的创建时间和最后更新时间
+    
+    确保所有收集的数据准确且格式规范。
+  expected_output: >
+    一份包含项目基本信息的侦察报告，包括：
+    - 仓库克隆状态
+    - 项目元数据（stars, forks, language等）
+    - 项目描述和关键统计信息
+    - 数据收集时间戳
+  agent: scout_agent
+
+architect_task:
+  description: >
+    分析 {repo_url} 项目的整体架构，具体任务：
+    1. 扫描项目的完整文件目录结构
+    2. 识别核心代码目录（如src, lib, app, components等）
+    3. 定位并解析关键配置文件（package.json, requirements.txt, Dockerfile等）
+    4. 分析项目的依赖关系和外部库使用情况
+    5. 识别项目的构建工具和开发环境配置
+    6. 生成项目的架构层次描述
+    
+    重点关注项目的组织方式和模块化设计。
+  expected_output: >
+    一份详细的项目架构分析文档，包含：
+    - 项目目录结构树状图
+    - 核心模块和组件识别
+    - 依赖关系清单
+    - 架构设计模式分析
+    - 配置环境说明
+  agent: architect_agent
+  context:
+    - scout_task
+
+code_review_task:
+  description: >
+    对 {repo_url} 项目进行代码质量审查，具体任务：
+    1. 基于架构分析结果，选择核心目录中的关键文件
+    2. 随机抽取3-5个重要源代码文件进行深度分析
+    3. 评估代码的可读性、注释质量和命名规范
+    4. 识别使用的设计模式和架构模式
+    5. 分析代码复杂度、函数长度和模块耦合度
+    6. 检查错误处理和异常管理机制
+    
+    提供具体的代码示例和改进建议。
+  expected_output: >
+    一份专业的代码审查报告，包含：
+    - 审查的文件列表和选择理由
+    - 代码质量评估（可读性、规范性等）
+    - 设计模式识别和分析
+    - 具体的改进建议和最佳实践
+    - 总体代码质量评分
+  agent: code_reviewer_agent
+  context:
+    - architect_task
+
+community_analysis_task:
+  description: >
+    分析 {repo_url} 项目的社区活跃度，具体任务：
+    1. 获取最近10个已打开和已关闭的issue
+    2. 获取最近10个pull request记录
+    3. 分析issue的类型分布（bug、feature、question等）
+    4. 识别社区关注的热点问题和趋势
+    5. 统计主要贡献者和他们的活跃度
+    6. 评估项目的响应速度和问题解决效率
+    
+    重点关注社区的健康发展状况。
+  expected_output: >
+    一份社区动态分析报告，包含：
+    - 近期issue和PR的统计摘要
+    - 社区关注焦点和趋势分析
+    - 核心贡献者识别和活跃度评估
+    - 项目维护响应指标
+    - 社区健康度评估
+  agent: community_watcher_agent
+  context:
+    - scout_task
+
+report_generation_task:
+  description: >
+    整合所有分析结果，为 {repo_url} 生成完整的技术分析报告，具体任务：
+    1. 汇总项目基本信息、架构分析、代码审查和社区分析
+    2. 生成结构化的Markdown技术报告
+    3. 基于报告内容自动生成Q&A训练数据集
+    4. 创建针对项目特定问题的问答对
+    5. 准备模型微调所需的数据格式
+    
+    报告应包含执行摘要、详细分析和结论建议。
+  expected_output: >
+    完整的项目分析交付物，包括：
+    - project_analysis_report.md：结构化技术报告
+    - qa_dataset.json：自动生成的问答数据集
+    - 模型微调配置说明
+    报告涵盖：项目概览、架构评估、代码质量、社区分析、总体建议
+  agent: report_writer_agent
+  context:
+    - scout_task
+    - architect_task
+    - code_review_task
+    - community_analysis_task
+  output_file: output/project_analysis_report.md

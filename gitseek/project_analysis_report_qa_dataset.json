@@ -1,0 +1,37 @@
+[
+  {
+    "question": "blog-writer-crewai 项目的主要编程语言是什么?",
+    "answer": "该项目主要使用 Jupyter Notebook 语言开发。",
+    "category": "基本信息"
+  },
+  {
+    "question": "blog-writer-crewai 项目有多少 Stars?",
+    "answer": "该项目目前有 3 个 Stars。",
+    "category": "基本信息"
+  },
+  {
+    "question": "blog-writer-crewai 项目的描述是什么?",
+    "answer": "A blog writer that takes a GitHub repo as input and produces a blog article describing how that project has been implemented",
+    "category": "基本信息"
+  },
+  {
+    "question": "blog-writer-crewai 项目的核心目录有哪些?",
+    "answer": "该项目的核心目录包括: notebooks, src, src/agents, src/tools, src/utils, src/config, output",
+    "category": "架构"
+  },
+  {
+    "question": "blog-writer-crewai 项目的社区活跃度如何?",
+    "answer": "该项目的活跃度等级为: 未知",
+    "category": "社区"
+  },
+  {
+    "question": "blog-writer-crewai 项目有多少贡献者?",
+    "answer": "该项目目前有 0 位贡献者。",
+    "category": "社区"
+  },
+  {
+    "question": "blog-writer-crewai 项目有哪些需要改进的地方?",
+    "answer": "⚠️ Issue 关闭率较低，需要改进问题响应\n⚠️ PR 合并率较低，建议优化审查流程",
+    "category": "改进建议"
+  }
+]
