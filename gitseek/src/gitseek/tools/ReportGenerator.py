@@ -183,6 +183,19 @@ class ReportGenerator(BaseTool):
             # 确保输出目录存在
             os.makedirs(os.path.dirname(output_path) if os.path.dirname(output_path) else ".", exist_ok=True)
             
+             # 🔥 新增：如果 project_data 为空，主动读取数据文件
+            if not project_data or not project_data.get('metadata'):
+                print("🔍 检测到空数据，开始从文件加载...")
+                project_data = self._load_data_from_files()
+
+            # 检查数据是否加载成功
+            if not project_data.get('metadata'):
+                error_msg = "❌ 无法获取项目数据，请确保前置任务已正确执行并生成数据文件"
+                print(error_msg)
+                return {"success": False, "error": error_msg}
+            
+            print(f"✅ 成功加载项目数据: {project_data['metadata'].get('name', 'Unknown')}")
+
             # 提取各部分数据
             metadata = project_data.get('metadata', {})
             architecture = project_data.get('architecture', {})
@@ -255,7 +268,72 @@ class ReportGenerator(BaseTool):
             
         except Exception as e:
             return {"success": False, "error": f"报告生成失败: {str(e)}"}
-
+    
+        # 🔥 新增：文件读取方法
+    def _load_data_from_files(self) -> Dict[str, Any]:
+        """从数据文件加载项目数据"""
+        data = {
+            'metadata': {},
+            'architecture': {},
+            'code_review': {},
+            'community': {}
+        }
+        
+        try:
+            # 读取侦察数据
+            if os.path.exists('output/scout_data.json'):
+                with open('output/scout_data.json', 'r', encoding='utf-8') as f:
+                    scout_data = json.load(f)
+                    data['metadata'] = scout_data.get('metadata', {})
+                    print(f"✅ 加载元数据: {data['metadata'].get('name', 'Unknown')} - {data['metadata'].get('stars', 0)} stars")
+            
+            # 读取架构数据
+            if os.path.exists('output/architect_data.json'):
+                with open('output/architect_data.json', 'r', encoding='utf-8') as f:
+                    arch_data = json.load(f)
+                    data['architecture'] = arch_data
+                    core_dirs = arch_data.get('core_directories', [])
+                    print(f"✅ 加载架构数据: {len(core_dirs)} 个核心目录")
+            
+            # 读取代码审查数据
+            if os.path.exists('output/code_review_data.json'):
+                with open('output/code_review_data.json', 'r', encoding='utf-8') as f:
+                    code_data = json.load(f)
+                    data['code_review'] = code_data
+                    avg_score = code_data.get('average_score', 'N/A')
+                    print(f"✅ 加载代码数据: 平均分 {avg_score}")
+            
+            # 读取社区数据
+            if os.path.exists('output/community_data.json'):
+                with open('output/community_data.json', 'r', encoding='utf-8') as f:
+                    community_data = json.load(f)
+                    data['community'] = community_data
+                    health_score = community_data.get('health_score', 'N/A')
+                    print(f"✅ 加载社区数据: 健康度 {health_score}")
+            
+            # 检查数据完整性
+            missing_sections = []
+            if not data['metadata']:
+                missing_sections.append('metadata')
+            if not data['architecture']:
+                missing_sections.append('architecture')
+            if not data['code_review']:
+                missing_sections.append('code_review') 
+            if not data['community']:
+                missing_sections.append('community')
+                
+            if missing_sections:
+                print(f"⚠️ 缺失数据部分: {missing_sections}")
+            else:
+                print("✅ 所有数据文件加载完成")
+                
+        except Exception as e:
+            print(f"❌ 读取数据文件失败: {e}")
+            import traceback
+            traceback.print_exc()
+        
+        return data
+        
     # === 报告内容生成方法 ===
     
     def _generate_executive_summary(self, data: Dict) -> str:
@@ -304,17 +382,25 @@ class ReportGenerator(BaseTool):
         if not structure:
             return "目录结构数据未获取"
         
-        # 简化的树状图
-        return f"""```
-{arch.get('directory', '/')}
-├── src/          # 源代码目录
-├── config/       # 配置文件
-├── tests/        # 测试文件
-└── docs/         # 文档
-```
-
-**核心目录:** {', '.join(arch.get('core_directories', []))}
-"""
+        # 🔥 修改：适配实际的数据结构
+        root = structure.get('root', {})
+        items = root.get('items', [])
+        
+        result = "```\n"
+        for item in items[:8]:  # 显示前8个主要目录
+            name = item.get('name', '')
+            desc = item.get('description', '')
+            if desc:
+                result += f"{name}/     # {desc}\n"
+            else:
+                result += f"{name}/\n"
+        result += "```\n\n"
+        
+        core_dirs = arch.get('core_directories', [])
+        if core_dirs:
+            result += f"**核心目录:** {', '.join(core_dirs)}"
+        
+        return result
 
     def _format_core_modules(self, arch: Dict) -> str:
         """格式化核心模块"""
@@ -334,59 +420,43 @@ class ReportGenerator(BaseTool):
         if not config_files:
             return "未找到配置文件"
         
-        result = "| 配置文件 | 类型 |\n|---------|------|\n"
-        for config in config_files[:10]:  # 限制显示数量
-            file_name = os.path.basename(config)
-            file_type = self._identify_config_type(file_name)
-            result += f"| `{file_name}` | {file_type} |\n"
+        result = "| 配置文件 | 类型 | 描述 |\n|---------|------|------|\n"
+        for config in config_files[:10]:
+            # 🔥 修改：适配实际的数据结构
+            path = config.get('path', '')
+            file_name = os.path.basename(path)
+            file_type = config.get('type', self._identify_config_type(file_name))
+            description = config.get('description', '')
+            result += f"| `{file_name}` | {file_type} | {description} |\n"
         
         if len(config_files) > 10:
             result += f"\n*... 以及其他 {len(config_files) - 10} 个配置文件*\n"
         
         return result
 
-    def _identify_config_type(self, filename: str) -> str:
-        """识别配置文件类型"""
-        config_types = {
-            'package.json': 'Node.js 依赖',
-            'requirements.txt': 'Python 依赖',
-            'pyproject.toml': 'Python 项目配置',
-            'Dockerfile': 'Docker 容器',
-            'docker-compose.yml': 'Docker Compose',
-            'pom.xml': 'Maven 构建',
-            'build.gradle': 'Gradle 构建',
-            'go.mod': 'Go 模块',
-            'Cargo.toml': 'Rust 包管理'
-        }
-        return config_types.get(filename, '配置文件')
-
     def _format_dependencies(self, arch: Dict) -> str:
         """格式化依赖关系"""
-        # 从配置文件中提取依赖信息
-        return """**主要依赖:**
-- 依赖分析基于配置文件解析
-- 详细信息请参考配置文件章节
-"""
-
-    def _assess_architecture(self, arch: Dict) -> str:
-        """评估架构质量"""
-        core_dirs = arch.get('core_directories', [])
-        config_files = arch.get('config_files', [])
+        deps = arch.get('dependencies', {})
+        if not deps:
+            return "依赖关系数据未获取"
         
-        assessment = []
+        # 🔥 修改：显示实际的依赖数据
+        result = "**主要依赖:**\n\n"
         
-        if len(core_dirs) > 0:
-            assessment.append("✅ 项目具有清晰的目录组织")
-        else:
-            assessment.append("⚠️ 目录结构不够清晰，建议改进")
+        python_deps = deps.get('python', {})
+        if python_deps:
+            result += "**Python 依赖:**\n"
+            for category, packages in python_deps.items():
+                result += f"- {category}: {len(packages)} 个包\n"
+            result += "\n"
         
-        if len(config_files) > 0:
-            assessment.append("✅ 配置文件完整")
+        js_deps = deps.get('javascript', {})
+        if js_deps:
+            result += "**JavaScript 依赖:**\n"
+            for category, packages in js_deps.items():
+                result += f"- {category}: {len(packages)} 个包\n"
         
-        if 'tests' in [d.lower() for d in core_dirs]:
-            assessment.append("✅ 包含测试目录")
-        
-        return "\n".join(assessment)
+        return result
 
     def _format_reviewed_files(self, code_review: Dict) -> str:
         """格式化审查的文件列表"""
@@ -397,8 +467,14 @@ class ReportGenerator(BaseTool):
         result = "| 文件 | 语言 | 代码行数 | 质量评分 |\n"
         result += "|------|------|----------|----------|\n"
         
-        for file_info in files[:10]:
-            result += f"| `{file_info.get('file_name', 'N/A')}` | {file_info.get('language', 'N/A')} | {file_info.get('code_lines', 0)} | {file_info.get('overall_score', 0)}/100 |\n"
+        for file_info in files[:8]:  # 显示前8个文件
+            file_path = file_info.get('file_path', '')
+            file_name = os.path.basename(file_path)
+            reason = file_info.get('selection_reason', '')[:50] + "..." if len(file_info.get('selection_reason', '')) > 50 else file_info.get('selection_reason', '')
+            analysis = file_info.get('analysis', {})
+            score = analysis.get('overall_score', 'N/A')
+            
+            result += f"| `{file_name}` | {reason} | {score}/100 |\n"
         
         return result
 
@@ -412,13 +488,24 @@ class ReportGenerator(BaseTool):
 
     def _format_design_patterns(self, code_review: Dict) -> str:
         """格式化设计模式"""
-        patterns = code_review.get('design_patterns', [])
-        if not patterns:
+        patterns_data = code_review.get('design_patterns', [])
+        if not patterns_data:
             return "未检测到明显的设计模式"
         
-        result = "识别到以下设计模式:\n\n"
-        for pattern in set(patterns):  # 去重
-            result += f"- {pattern}\n"
+        # 🔥 修改：适配实际的数据结构
+        if isinstance(patterns_data, list) and patterns_data and isinstance(patterns_data[0], dict):
+            # 新的数据结构：列表中的字典
+            result = "识别到以下设计模式:\n\n"
+            for pattern_info in patterns_data:
+                pattern = pattern_info.get('pattern', '')
+                usage = pattern_info.get('usage', '')
+                files = pattern_info.get('files', [])
+                result += f"- **{pattern}**: {usage} (文件: {', '.join(files[:3])})\n"
+        else:
+            # 旧的数据结构：简单的字符串列表
+            result = "识别到以下设计模式:\n\n"
+            for pattern in set(patterns_data):
+                result += f"- {pattern}\n"
         
         return result
 
