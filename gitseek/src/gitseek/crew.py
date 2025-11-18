@@ -20,9 +20,10 @@ class GitSeek():
     # 配置DeepSeek LLM
     llm = LLM(
         model="openai/deepseek-chat",
-        api_key=os.environ.get("sk-99491e7c88dc454e81aca34aad4278fd"),  # 建议使用环境变量
+        api_key=os.environ.get("sk-c9eb25289c154ce2952db033e4879cf5"),  # 建议使用环境变量
         base_url="https://api.deepseek.com/v1",
     )
+
 
     @agent
     def scout_agent(self) -> Agent:
@@ -106,6 +107,25 @@ class GitSeek():
             verbose=True,
             llm=self.llm
         )
+    
+    '''
+    @agent
+    def qa_agent(self) -> Agent:
+        """GitHub仓库问答专家 - 基于分析结果回答用户自然语言问题"""
+        return Agent(
+            role="GitHub仓库问答专家",
+            goal="""基于已完成的GitHub仓库分析结果（元数据、架构、代码质量、社区动态、完整报告），
+            准确回答用户的自然语言问题，支持多轮追问，保持回答的一致性和相关性""",
+            backstory="""你是精通技术分析与问答的专家，能自动从CrewAI记忆库中检索与用户问题相关的仓库分析信息，
+            无需手动查找报告文件。你会结合历史对话上下文，理解多轮追问的逻辑，用清晰的自然语言给出答案，
+            必要时引用分析结果中的具体细节（如“根据架构分析，该项目核心目录为src/core”），
+            若记忆中无相关信息，如实告知用户并建议补充提问方向。""",
+            verbose=True,
+            llm=self.llm
+        )
+    '''
+    
+    
 
     # === 任务定义 ===
     
@@ -135,6 +155,7 @@ class GitSeek():
                 "metadata": {...},
                 "timestamp": "2025-11-16 10:00:00"
             }""",
+             output_file='output/scout_data.json'  # 输出到文件
         )
 
     @task
@@ -165,7 +186,8 @@ class GitSeek():
                 "config_files": [...],
                 "dependencies": {...}
             }""",
-            context=[self.scout_task()]
+            #context=[self.scout_task()]
+            output_file='output/architect_data.json'  # 输出到文件 
         )
 
     @task
@@ -198,7 +220,8 @@ class GitSeek():
                 "design_patterns": [...],
                 "recommendations": [...]
             }""",
-            context=[self.scout_task(),self.architect_task()]
+            #context=[self.scout_task(),self.architect_task()]
+            output_file='output/code_review_data.json'  # 输出到文件
         )
 
     @task
@@ -232,7 +255,8 @@ class GitSeek():
                 "health_score": 85,
                 "activity_level": "Highly Active"
             }""",
-            context=[self.scout_task()]
+            #context=[self.scout_task()]
+            output_file='output/community_data.json'  # 输出到文件
         )
 
     @task
@@ -246,6 +270,21 @@ class GitSeek():
             4. 基于报告内容自动生成Q&A训练数据集
             5. 创建针对项目特定问题的问答对
             6. 准备模型微调所需的数据格式
+
+             **重要：请先读取以下数据文件，基于真实数据生成报告：**
+        - output/scout_data.json：包含项目stars、forks、语言、描述等元数据
+        - output/architect_data.json：包含目录结构、核心模块、依赖关系
+        - output/code_review_data.json：包含代码质量评分、设计模式、复杂度分析
+        - output/community_data.json：包含issues、PR、贡献者、健康度数据
+        
+        **报告必须基于这些文件中的具体数据，不要使用占位符：**
+        1. 项目概览 - 使用scout_data中的具体stars/forks/语言数据
+        2. 架构评估 - 描述architect_data中的实际目录结构和依赖
+        3. 代码质量 - 引用code_review_data中的质量评分和审查发现  
+        4. 社区分析 - 包含community_data中的真实issues和PR统计
+        5. 总体建议 - 基于所有具体分析结果提出改进建议
+        
+        确保所有数据都是真实分析得到的，不要生成空报告。
             
             确保报告专业、完整、易读。""",
             agent=self.report_writer_agent(),
@@ -259,25 +298,50 @@ class GitSeek():
             3. 代码质量（质量评分、设计模式、复杂度）
             4. 社区分析（活跃度、贡献者、健康度）
             5. 总体建议（优势、改进、战略规划）""",
-            context=[
-                self.scout_task(),
-                self.architect_task(), 
-                self.code_review_task(),
-                self.community_analysis_task()
-            ],
+            #context=[
+            #    self.scout_task(),
+            #    self.architect_task(), 
+            #    self.code_review_task(),
+            #    self.community_analysis_task()
+            #],
             output_file='output/project_analysis_report.md'
         )
+    
+    '''
+    @task
+    def qa_task(self) -> Task:
+        """基于仓库分析结果的多轮问答任务"""
+        return Task(
+            description="""基于已存储的{repo_url}仓库完整分析结果，回答用户的自然语言问题：{user_question}
+            1. 从CrewAI记忆库中检索与问题相关的分析信息（包括侦察、架构、代码、社区、报告数据）；
+            2. 结合历史对话上下文，判断用户是否为多轮追问，确保回答连贯；
+            3. 提取关键信息，用清晰、简洁的自然语言组织答案；
+            4. 必要时引用分析结果的具体来源（如“来自代码质量分析”“根据社区活跃度统计”）；
+            5. 若无法从记忆中找到相关信息，如实告知用户，不编造内容。""",
+            agent=self.qa_agent(),
+            expected_output="""针对用户问题的准确、连贯回答，包含：
+            - 问题对应的核心分析信息（如架构细节、代码质量、社区数据等）；
+            - 必要的引用说明（明确信息来源的分析环节）；
+            - 若为多轮追问，需关联历史对话内容；
+            - 结尾可询问“是否需要进一步了解该仓库的其他信息？”以引导后续交互。""",
+            # 无需显式指定context：记忆库已存储所有前置分析任务结果
+        )
+    '''
+    
+    
 
     @crew
     def crew(self) -> Crew:
         """创建GitHub分析团队"""
+        
         return Crew(
             agents=[
                 self.scout_agent(),
                 self.architect_agent(),
                 self.code_reviewer_agent(),
                 self.community_watcher_agent(),
-                self.report_writer_agent()
+                self.report_writer_agent(),
+                #self.qa_agent()  # 新增：添加问答智能体
             ],
             tasks=[
                 self.scout_task(),
@@ -288,8 +352,12 @@ class GitSeek():
             ],
             process=Process.sequential,
             verbose=True,
+            #memory=True,
             memory=False,
             share_crew=True,
             # 确保任务输出可以在agents间共享
-            full_output=True
+            full_output=True,
+            # 3. 传入自定义的 ChromaDB 客户端（强制使用我们的嵌入函数）
+            #rag_client=chroma_client
         )
+    
