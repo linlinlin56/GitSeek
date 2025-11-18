@@ -1,0 +1,201 @@
+{
+    "structure": {
+        "root": {
+            "name": "TradingAgents-CN",
+            "type": "directory",
+            "items": [
+                {
+                    "name": "app",
+                    "type": "directory",
+                    "description": "FastAPI后端应用核心目录",
+                    "subdirectories": [
+                        "core", "middleware", "models", "routers", "services", "utils", "worker"
+                    ]
+                },
+                {
+                    "name": "frontend",
+                    "type": "directory", 
+                    "description": "Vue.js前端应用",
+                    "subdirectories": [
+                        "src/api", "src/components", "src/views", "src/stores", "src/utils"
+                    ]
+                },
+                {
+                    "name": "tradingagents",
+                    "type": "directory",
+                    "description": "核心交易智能体库",
+                    "subdirectories": [
+                        "agents", "config", "dataflows", "graph", "llm_adapters", "tools"
+                    ]
+                },
+                {
+                    "name": "scripts",
+                    "type": "directory",
+                    "description": "部署和维护脚本",
+                    "subdirectories": [
+                        "deployment", "setup", "maintenance", "debug", "test"
+                    ]
+                },
+                {
+                    "name": "docs",
+                    "type": "directory",
+                    "description": "项目文档",
+                    "subdirectories": [
+                        "architecture", "configuration", "deployment", "guides"
+                    ]
+                },
+                {
+                    "name": "config",
+                    "type": "directory",
+                    "description": "配置文件目录"
+                },
+                {
+                    "name": "data",
+                    "type": "directory",
+                    "description": "数据存储目录"
+                },
+                {
+                    "name": "examples",
+                    "type": "directory",
+                    "description": "使用示例"
+                },
+                {
+                    "name": "tests",
+                    "type": "directory",
+                    "description": "测试文件"
+                }
+            ]
+        }
+    },
+    "core_directories": [
+        "app",
+        "frontend", 
+        "tradingagents",
+        "scripts",
+        "config",
+        "data"
+    ],
+    "config_files": [
+        "pyproject.toml",
+        "requirements.txt",
+        "docker-compose.yml",
+        "Dockerfile.backend",
+        "Dockerfile.frontend",
+        "frontend/package.json",
+        "frontend/tsconfig.json",
+        "frontend/vite.config.ts",
+        "config/logging.toml",
+        ".env.example"
+    ],
+    "dependencies": {
+        "backend": {
+            "framework": [
+                "fastapi>=0.104.0",
+                "uvicorn[standard]>=0.24.0",
+                "pydantic>=2.0.0",
+                "pydantic-settings>=2.0.0"
+            ],
+            "database": [
+                "motor>=3.3.0",
+                "pymongo>=4.0.0",
+                "redis>=6.2.0"
+            ],
+            "authentication": [
+                "PyJWT>=2.0.0",
+                "bcrypt>=4.0.0"
+            ],
+            "scheduling": [
+                "apscheduler>=3.10.0"
+            ],
+            "data_sources": [
+                "akshare>=1.16.98",
+                "tushare>=1.4.21",
+                "baostock>=0.8.8",
+                "finnhub-python>=2.4.23",
+                "yfinance>=0.2.63"
+            ],
+            "ai_llm": [
+                "openai>=1.0.0,<2.0.0",
+                "langchain-openai>=0.1.0",
+                "langchain-google-genai>=2.1.12",
+                "google-genai>=0.1.0",
+                "dashscope"
+            ],
+            "data_processing": [
+                "pandas",
+                "stockstats>=0.6.5",
+                "backtrader>=1.9.78.123"
+            ],
+            "reporting": [
+                "markdown>=3.4.0",
+                "pypandoc>=1.11",
+                "python-docx>=0.8.11",
+                "pdfkit>=1.0.0"
+            ]
+        },
+        "frontend": {
+            "framework": [
+                "vue@^3.4.0",
+                "vue-router@^4.2.5",
+                "pinia@^2.1.7"
+            ],
+            "ui_components": [
+                "element-plus@^2.4.4",
+                "@element-plus/icons-vue@^2.3.1"
+            ],
+            "charts": [
+                "echarts@^5.4.3",
+                "vue-echarts@^6.6.1"
+            ],
+            "utilities": [
+                "axios@^1.6.2",
+                "dayjs@^1.11.10",
+                "lodash-es@^4.17.21",
+                "marked@^16.2.0"
+            ],
+            "development": [
+                "typescript@~5.3.3",
+                "vite",
+                "@vitejs/plugin-vue@^5.0.4"
+            ]
+        },
+        "infrastructure": {
+            "containerization": [
+                "Docker",
+                "docker-compose"
+            ],
+            "databases": [
+                "MongoDB",
+                "Redis"
+            ]
+        }
+    },
+    "architecture_analysis": {
+        "design_patterns": [
+            "Microservices Architecture",
+            "Multi-Agent System",
+            "Event-Driven Architecture",
+            "Repository Pattern",
+            "Service Layer Pattern"
+        ],
+        "core_modules": {
+            "api_layer": "FastAPI RESTful API with SSE support",
+            "agent_system": "Multi-agent trading system with specialized roles",
+            "data_processing": "Unified data source management with fallback mechanisms",
+            "llm_integration": "Multi-provider LLM adapter system",
+            "caching": "Multi-layer caching (Redis, MongoDB, file-based)",
+            "scheduling": "APScheduler for task management"
+        },
+        "deployment": {
+            "containerized": true,
+            "multi_arch_support": true,
+            "service_architecture": "Backend + Frontend + MongoDB + Redis",
+            "port_configuration": {
+                "backend": 8000,
+                "frontend": 3000,
+                "mongodb": 27017,
+                "redis": 6379
+            }
+        }
+    }
+}
