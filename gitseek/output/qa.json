@@ -1,0 +1,42 @@
+[
+    {
+        "question": "GitSeek项目的主要功能是什么？",
+        "answer": "GitSeek是一个基于crewAI框架的多智能体系统，专门用于GitHub仓库的自动化分析。项目通过多个专门化的智能体工具进行仓库元数据获取、代码结构分析、质量评估和社区动态分析，最终生成完整的项目分析报告。"
+    },
+    {
+        "question": "项目使用什么编程语言和技术栈？",
+        "answer": "GitSeek使用Python作为主要编程语言，基于crewAI多智能体框架构建。主要依赖包括crewai[tools]==1.4.1和litellm>=1.79.3，使用Hatchling作为构建系统，支持Python 3.10到3.13版本。"
+    },
+    {
+        "question": "项目的核心架构设计是怎样的？",
+        "answer": "项目采用基于智能体的模块化架构设计，包含清晰的关注点分离。核心架构包括：工具模块（tools）负责GitHub API交互、文件系统浏览、代码总结和报告生成；配置模块（config）使用YAML文件定义智能体角色和任务工作流；输出模块（output）生成JSON和Markdown格式的分析报告。"
+    },
+    {
+        "question": "项目的代码质量如何？",
+        "answer": "根据代码质量分析，项目整体质量评分为69.6分，处于良好水平。主要优势包括良好的可读性（平均95分以上）和充分的设计模式应用（MVC、工厂模式、观察者模式等）。需要改进的方面包括：部分模块圈复杂度较高（ReportGenerator.py达127）、部分函数过长需要拆分、以及需要优化代码注释覆盖率。"
+    },
+    {
+        "question": "如何运行GitSeek项目？",
+        "answer": "项目提供多个入口点：通过'gitseek.main:run'运行主要分析功能，'gitseek.main:train'用于训练，'gitseek.main:replay'用于重放分析，'gitseek.main:test'用于测试，以及'gitseek.main:run_with_trigger'用于触发式运行。项目使用uv.lock管理依赖，确保环境一致性。"
+    },
+    {
+        "question": "项目的社区活跃度如何？",
+        "answer": "GitSeek目前处于早期开发阶段，社区活跃度较低。项目仅有1个星标、0个分叉，由单一贡献者linlinlin56维护。没有开放的问题或拉取请求，最后一次更新在2025年11月18日。社区健康评分为45分，建议增加文档和贡献指南来吸引更多参与者。"
+    },
+    {
+        "question": "项目支持哪些分析功能？",
+        "answer": "GitSeek支持全面的GitHub仓库分析功能，包括：仓库元数据获取（stars、forks、语言等）、代码结构分析（目录架构、依赖关系）、代码质量评估（复杂度、设计模式、可维护性）、社区动态分析（问题、PR、贡献者）、以及生成综合的项目分析报告。"
+    },
+    {
+        "question": "项目的核心模块有哪些？",
+        "answer": "核心模块包括：ReportGenerator.py（报告生成）、LLMCodeSummarizer.py（代码总结分析）、GitHubApiReader.py（GitHub API交互）、FileSystemBrowser.py（文件系统浏览）、FileContentReader.py（文件内容读取）、以及crew.py（多智能体系统管理）。配置模块通过agents.yaml和tasks.yaml定义智能体工作流。"
+    },
+    {
+        "question": "项目是否有许可证？",
+        "answer": "根据元数据分析，GitSeek项目目前没有明确的许可证声明（显示为'No license'）。建议项目维护者添加合适的开源许可证来明确使用条款和分发条件，以便其他开发者能够合法地使用和贡献代码。"
+    },
+    {
+        "question": "项目的输出格式和内容是什么？",
+        "answer": "GitSeek生成多种格式的分析输出：architect_data.json（架构数据）、project_analysis_report.md（项目分析报告）、scout_data.json（侦察数据）、community_data.json（社区数据）、code_review_data.json（代码审查数据）。这些输出提供了从技术架构到社区健康的全面项目分析信息。"
+    }
+]
