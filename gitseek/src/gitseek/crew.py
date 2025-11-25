@@ -6,6 +6,7 @@ from .tools.FileContentReader import FileContentReader
 from .tools.FileSystemBrowser import FileSystemBrowser
 from .tools.LLMCodeSummarizer import LLMCodeSummarizer
 from .tools.ReportGenerator import ReportGenerator
+from .tools.SmartQuestionGuide import SmartQuestionGuide
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
 import os
@@ -20,7 +21,7 @@ class GitSeek():
     # 配置DeepSeek LLM
     llm = LLM(
         model="openai/deepseek-chat",
-        api_key=os.environ.get("sk-c9eb25289c154ce2952db033e4879cf5"),  # 建议使用环境变量
+        api_key=os.environ.get("sk-b5b107797ce14c5e9cb914ba8e7811e2"),  # 建议使用环境变量
         base_url="https://api.deepseek.com/v1",
     )
 
@@ -107,6 +108,21 @@ class GitSeek():
             verbose=True,
             llm=self.llm
         )
+    
+    @agent
+    def question_guide_agent(self) -> Agent:
+        """智能提问引导员 - 负责推荐高频问题和追问方向"""
+        guide_tool = SmartQuestionGuide()
+        
+        return Agent(
+            role="智能提问引导专家",
+            goal="基于GitHub仓库分析结果，智能推荐用户可能感兴趣的高频问题和追问方向",
+            backstory="""你是用户体验专家，擅长根据技术项目的特征预测用户的兴趣点。
+            你能快速理解项目特点，并生成有针对性的问题建议，帮助用户深入探索项目。""",
+            tools=[guide_tool],
+            verbose=True,
+            llm=self.llm
+    )
     
     '''
     @agent
@@ -307,6 +323,39 @@ class GitSeek():
             output_file='output/project_analysis_report.md'
         )
     
+    @task
+    def question_guide_task(self) -> Task:
+        """智能提问引导任务"""
+        return Task(
+            description="""基于对仓库 {repo_url} 的完整分析结果，为用户生成智能问题推荐：
+            1. 分析项目特征（流行度、活跃度、复杂度、新手友好度等）
+            2. 生成个性化问题推荐（15个左右高频问题）
+            3. 提供追问引导建议
+            4. 按类别组织问题（架构、代码、社区、入门等）
+            
+            确保问题具有针对性和实用性。""",
+            agent=self.question_guide_agent(),
+            expected_output="""智能问题推荐报告，包含：
+            - 个性化问题列表（按类别分组）
+            - 追问引导建议
+            - 问题分类统计
+            
+            输出格式:
+            {
+                "personalized_questions": [
+                    {"question": "问题内容", "category": "问题类别"},
+                    ...
+                ],
+                "follow_up_guides": [
+                    {"topic": "主题", "suggestions": ["建议1", "建议2"]},
+                    ...
+                ],
+                "question_categories": ["architecture", "community", ...],
+                "total_questions": 15
+            }""",
+            output_file='output/question_guide.json'
+        )
+    
     '''
     @task
     def qa_task(self) -> Task:
@@ -342,13 +391,15 @@ class GitSeek():
                 self.community_watcher_agent(),
                 self.report_writer_agent(),
                 #self.qa_agent()  # 新增：添加问答智能体
+                self.question_guide_agent()  # 新增引导智能体
             ],
             tasks=[
                 self.scout_task(),
                 self.architect_task(),
                 self.code_review_task(),
                 self.community_analysis_task(),
-                self.report_generation_task()
+                self.report_generation_task(),
+                self.question_guide_task()   # 新增引导任务
             ],
             process=Process.sequential,
             verbose=True,
