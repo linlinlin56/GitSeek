@@ -1,0 +1,73 @@
+{
+  "success": true,
+  "personalized_questions": [
+    {
+      "question": "该项目的核心模块是什么？",
+      "category": "architecture"
+    },
+    {
+      "question": "项目的主要技术栈有哪些？",
+      "category": "tech_stack"
+    },
+    {
+      "question": "社区活跃度如何？",
+      "category": "community"
+    },
+    {
+      "question": "代码质量怎么样？",
+      "category": "code_quality"
+    },
+    {
+      "question": "适合初学者参与贡献吗？",
+      "category": "community"
+    },
+    {
+      "question": "为什么这个项目如此受欢迎？",
+      "category": "general"
+    },
+    {
+      "question": "项目解决了什么痛点？",
+      "category": "general"
+    },
+    {
+      "question": "代码复杂度高吗？",
+      "category": "code_quality"
+    },
+    {
+      "question": "注释和文档是否完善？",
+      "category": "code_quality"
+    },
+    {
+      "question": "有哪些可以改进的代码质量问题？",
+      "category": "code_quality"
+    },
+    {
+      "question": "测试覆盖情况如何？",
+      "category": "general"
+    },
+    {
+      "question": "代码可维护性怎么样？",
+      "category": "code_quality"
+    }
+  ],
+  "follow_up_guides": [
+    {
+      "topic": "代码改进",
+      "suggestions": [
+        "可以询问具体的改进建议",
+        "了解技术债务处理计划",
+        "探讨代码重构的可能性"
+      ]
+    }
+  ],
+  "question_categories": [
+    "has_high_stars",
+    "has_active_community",
+    "has_complex_architecture",
+    "has_quality_issues",
+    "has_recent_updates",
+    "is_beginner_friendly",
+    "has_detailed_docs"
+  ],
+  "total_questions": 12
+}
