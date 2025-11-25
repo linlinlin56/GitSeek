@@ -1,0 +1,42 @@
+[
+    {
+      "question": "GitSeek 项目的主要技术架构是什么？",
+      "answer": "GitSeek 采用基于 crewAI 框架的多智能体系统架构，使用 Agent-Crew-Task 设计模式，包含5个专业代理：侦察代理、架构代理、代码审查代理、社区观察代理和报告编写代理。"
+    },
+    {
+      "question": "项目的代码质量评分是多少？主要问题是什么？",
+      "answer": "项目总体代码质量评分为69.6分，评级为Fair。主要问题是核心工具模块的代码复杂度非常高，其中LLMCodeSummarizer.py复杂度达149，GitHubApiReader.py复杂度135，ReportGenerator.py复杂度127。"
+    },
+    {
+      "question": "GitSeek 使用哪些设计模式？",
+      "answer": "项目实现了多种设计模式，包括：Factory Pattern、Observer Pattern、Strategy Pattern、Dependency Injection、MVC/MVP Pattern 和 Decorator Pattern。"
+    },
+    {
+      "question": "项目的社区健康度如何？存在哪些风险？",
+      "answer": "社区健康评分为45分，活跃度为低。主要风险包括：单一贡献者依赖、无外部社区参与、项目历史记录有限、缺乏Issue和PR历史用于社区评估。"
+    },
+    {
+      "question": "项目的主要依赖有哪些？",
+      "answer": "主要依赖包括：crewai[tools]==1.4.1 和 litellm>=1.79.3，使用hatchling作为构建工具，支持Python 3.10-3.13版本。"
+    },
+    {
+      "question": "GitSeek 的核心工具模块有哪些功能？",
+      "answer": "核心工具模块包括：GitShellTool(Git操作管理)、GitHubApiReader(GitHub API集成)、FileContentReader(文件内容解析)、FileSystemBrowser(目录结构扫描)、LLMCodeSummarizer(AI代码摘要分析)、ReportGenerator(报告生成格式化)。"
+    },
+    {
+      "question": "项目的注释质量存在什么问题？",
+      "answer": "注释比例严重不平衡：GitHubApiReader.py注释率仅7.96%，crew.py仅5.63%，需要增加注释；而LLMCodeSummarizer.py注释率达110.28%，存在过度注释需要精简。"
+    },
+    {
+      "question": "项目的主要优势有哪些？",
+      "answer": "主要优势包括：活跃的开发状态、结构良好的多智能体架构、全面的GitHub分析工具集、现代化的Python开发技术栈、持续的功能迭代。"
+    },
+    {
+      "question": "对于代码复杂度问题有什么具体改进建议？",
+      "answer": "高优先级建议：重构LLMCodeSummarizer.py(复杂度149)、GitHubApiReader.py(复杂度135)和ReportGenerator.py(复杂度127)中的大函数；拆分超过50行的函数以提高可维护性。"
+    },
+    {
+      "question": "项目的开发阶段和未来规划是什么？",
+      "answer": "项目处于早期开发阶段（仅6天历史）。短期规划：完成核心模块重构、建立测试框架；中期目标：吸引外部贡献者、建立发布周期；长期愿景：成为GitHub仓库分析标准工具、建立活跃社区。"
+    }
+  ]

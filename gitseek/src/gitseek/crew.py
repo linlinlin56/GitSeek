@@ -124,22 +124,21 @@ class GitSeek():
             llm=self.llm
     )
     
-    '''
+    
+    
     @agent
     def qa_agent(self) -> Agent:
         """GitHub仓库问答专家 - 基于分析结果回答用户自然语言问题"""
         return Agent(
             role="GitHub仓库问答专家",
             goal="""基于已完成的GitHub仓库分析结果（元数据、架构、代码质量、社区动态、完整报告），
-            准确回答用户的自然语言问题，支持多轮追问，保持回答的一致性和相关性""",
+            准确生成并回答用户的自然语言问题""",
             backstory="""你是精通技术分析与问答的专家，能自动从CrewAI记忆库中检索与用户问题相关的仓库分析信息，
-            无需手动查找报告文件。你会结合历史对话上下文，理解多轮追问的逻辑，用清晰的自然语言给出答案，
-            必要时引用分析结果中的具体细节（如“根据架构分析，该项目核心目录为src/core”），
-            若记忆中无相关信息，如实告知用户并建议补充提问方向。""",
+            无需手动查找报告文件。用清晰的自然语言提出问题并给出答案，必要时引用分析结果中的具体细节（如“根据架构分析，该项目核心目录为src/core”）""",
             verbose=True,
             llm=self.llm
         )
-    '''
+    
     
     
 
@@ -356,27 +355,26 @@ class GitSeek():
             output_file='output/question_guide.json'
         )
     
-    '''
+    
+    
     @task
     def qa_task(self) -> Task:
         """基于仓库分析结果的多轮问答任务"""
         return Task(
-            description="""基于已存储的{repo_url}仓库完整分析结果，回答用户的自然语言问题：{user_question}
-            1. 从CrewAI记忆库中检索与问题相关的分析信息（包括侦察、架构、代码、社区、报告数据）；
-            2. 结合历史对话上下文，判断用户是否为多轮追问，确保回答连贯；
-            3. 提取关键信息，用清晰、简洁的自然语言组织答案；
-            4. 必要时引用分析结果的具体来源（如“来自代码质量分析”“根据社区活跃度统计”）；
-            5. 若无法从记忆中找到相关信息，如实告知用户，不编造内容。""",
+            description="""整合所有分析结果，为项目 {repo_url} 生成一问一答式的问答数据集。
+            1. 提出10个项目使用者可能对项目产生的问题
+            2. 根据项目分析结果回答问题
+            3. 将问题和答案按“question”“answer”对的方式输出在json文件中。""",
             agent=self.qa_agent(),
-            expected_output="""针对用户问题的准确、连贯回答，包含：
-            - 问题对应的核心分析信息（如架构细节、代码质量、社区数据等）；
-            - 必要的引用说明（明确信息来源的分析环节）；
-            - 若为多轮追问，需关联历史对话内容；
-            - 结尾可询问“是否需要进一步了解该仓库的其他信息？”以引导后续交互。""",
-            # 无需显式指定context：记忆库已存储所有前置分析任务结果
+            expected_output="""qa_dataset.json：自动生成的问答数据集""",
+            context=[
+                self.scout_task(),
+                self.architect_task(), 
+                self.code_review_task(),
+                self.community_analysis_task(),
+            ],
+            output_file='output/qa.json'
         )
-    '''
-    
     
 
     @crew
@@ -385,13 +383,15 @@ class GitSeek():
         
         return Crew(
             agents=[
+
                 self.scout_agent(),
                 self.architect_agent(),
                 self.code_reviewer_agent(),
                 self.community_watcher_agent(),
                 self.report_writer_agent(),
                 #self.qa_agent()  # 新增：添加问答智能体
-                self.question_guide_agent()  # 新增引导智能体
+                self.question_guide_agent(),  # 新增引导智能体
+                self.qa_agent()
             ],
             tasks=[
                 self.scout_task(),
@@ -399,7 +399,8 @@ class GitSeek():
                 self.code_review_task(),
                 self.community_analysis_task(),
                 self.report_generation_task(),
-                self.question_guide_task()   # 新增引导任务
+                self.question_guide_task(),   # 新增引导任务
+                self.qa_task()
             ],
             process=Process.sequential,
             verbose=True,

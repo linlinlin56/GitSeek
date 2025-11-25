@@ -1,63 +1,57 @@
 {
     "issues": {
-        "total_open": 0,
-        "recent_opened": [],
-        "recent_closed": [],
-        "type_distribution": {
+        "total_count": 0,
+        "open_issues": 0,
+        "closed_issues": 0,
+        "recent_issues": [],
+        "issue_types": {
             "bug": 0,
             "feature": 0,
             "question": 0,
             "enhancement": 0
         },
-        "trend_analysis": "No recent community issues detected, suggesting either stable codebase or limited community engagement",
-        "response_efficiency": "N/A - No issues to measure response time"
+        "trend_analysis": "No community issues reported, suggesting either stable codebase or limited community engagement"
     },
     "prs": {
         "total_count": 0,
-        "recent_merged": [],
-        "recent_open": [],
-        "merge_rate": "N/A",
-        "review_time": "N/A",
-        "trend_analysis": "No recent pull request activity detected, indicating development may be primarily by maintainer"
+        "open_prs": 0,
+        "merged_prs": 0,
+        "recent_prs": [],
+        "pr_activity": "No recent pull request activity detected"
     },
     "contributors": {
-        "primary_contributor": "li-xiu-qi",
-        "contributor_count": 1,
-        "recent_activity": {
+        "total_contributors": 1,
+        "main_contributor": "li-xiu-qi",
+        "contributor_activity": {
             "li-xiu-qi": {
-                "commits": "Primary maintainer",
-                "last_activity": "2025-06-06T08:18:55Z",
-                "contribution_level": "Sole maintainer"
+                "contributions": "Primary author and maintainer",
+                "last_activity": "2025-06-06",
+                "activity_level": "Initial development only"
             }
         },
-        "community_engagement": "Low - Single maintainer project"
+        "community_participation": "Single contributor project with no external contributions"
     },
-    "health_score": 65,
+    "health_score": 45,
     "activity_level": "Low Activity",
     "community_metrics": {
-        "stars_growth": 117,
+        "stars": 117,
         "forks": 25,
         "watchers": 117,
-        "issue_resolution_rate": "N/A",
-        "pr_merge_rate": "N/A",
-        "maintainer_responsiveness": "N/A - No community interactions to measure"
+        "response_efficiency": "N/A - No community issues to respond to",
+        "issue_resolution_rate": "N/A - No issues reported",
+        "development_velocity": "Stalled - No commits since initial push on 2025-06-06",
+        "community_growth": "Limited - No recent activity or community engagement"
     },
-    "risk_factors": [
-        "Single maintainer dependency",
-        "No recent community engagement",
-        "Limited issue/PR activity",
-        "Last push was 5+ months ago"
-    ],
-    "strengths": [
-        "Good star-to-fork ratio (4.7:1)",
-        "Clear documentation and structure",
-        "Modular architecture design",
-        "MIT license for open collaboration"
-    ],
+    "trend_analysis": {
+        "focus_areas": "Initial LLM-based data analysis agent development",
+        "community_engagement": "Very low - No issues, PRs, or discussions",
+        "project_momentum": "Stalled - No development activity for 5+ months",
+        "maintenance_status": "Minimal maintenance - Repository appears to be in initial release state"
+    },
     "recommendations": [
-        "Encourage community issue reporting",
-        "Establish contribution guidelines",
-        "Promote project to attract more contributors",
-        "Consider adding community discussion forums"
+        "Encourage community engagement through issue templates and contribution guidelines",
+        "Consider adding documentation for community contributions",
+        "Monitor for potential community interest given the 117 stars and 25 forks",
+        "Plan for project maintenance and community building strategies"
     ]
 }
