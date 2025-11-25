@@ -1,47 +1,63 @@
 {
     "issues": {
-        "total_open": 50,
-        "recent_activity": "Based on metadata, repository shows active maintenance with recent updates (2025-11-18)",
-        "response_efficiency": "Cannot determine from available data - need issue timeline data",
-        "type_distribution": "Cannot determine from available data - need detailed issue labels"
+        "total_open": 0,
+        "recent_opened": [],
+        "recent_closed": [],
+        "type_distribution": {
+            "bug": 0,
+            "feature": 0,
+            "question": 0,
+            "enhancement": 0
+        },
+        "trend_analysis": "No recent community issues detected, suggesting either stable codebase or limited community engagement",
+        "response_efficiency": "N/A - No issues to measure response time"
     },
     "prs": {
-        "recent_activity": "Repository shows recent push activity (2025-11-17), indicating ongoing development",
-        "merge_rate": "Cannot determine from available data",
-        "review_efficiency": "Cannot determine from available data"
+        "total_count": 0,
+        "recent_merged": [],
+        "recent_open": [],
+        "merge_rate": "N/A",
+        "review_time": "N/A",
+        "trend_analysis": "No recent pull request activity detected, indicating development may be primarily by maintainer"
     },
     "contributors": {
-        "primary_contributor": "hsliuping (repository owner)",
-        "community_size": "Large community with 12,948 stars and 2,791 forks",
-        "engagement_level": "High engagement based on star count and fork activity",
-        "collaboration_patterns": "Cannot determine from available data - need contributor statistics"
+        "primary_contributor": "li-xiu-qi",
+        "contributor_count": 1,
+        "recent_activity": {
+            "li-xiu-qi": {
+                "commits": "Primary maintainer",
+                "last_activity": "2025-06-06T08:18:55Z",
+                "contribution_level": "Sole maintainer"
+            }
+        },
+        "community_engagement": "Low - Single maintainer project"
     },
-    "health_score": 78,
-    "activity_level": "Highly Active",
-    "analysis_summary": {
-        "strengths": [
-            "Large and engaged community (12.9K stars, 2.8K forks)",
-            "Recent activity with updates in November 2025",
-            "Well-structured codebase with good design patterns",
-            "Comprehensive documentation and deployment support"
-        ],
-        "concerns": [
-            "Limited contributor diversity data available",
-            "Cannot assess issue resolution timelines",
-            "High code complexity in some core files",
-            "Missing detailed community interaction metrics"
-        ],
-        "recommendations": [
-            "Encourage more community contributions through issue triaging",
-            "Monitor issue response times to maintain community engagement",
-            "Continue code quality improvements to reduce complexity",
-            "Expand contributor base beyond primary maintainer"
-        ]
-    },
+    "health_score": 65,
+    "activity_level": "Low Activity",
     "community_metrics": {
-        "growth_trend": "Positive (based on high star and fork counts)",
-        "maintenance_quality": "Good (regular updates and structured codebase)",
-        "documentation_quality": "Good (comprehensive docs and wiki)",
-        "adoption_rate": "High (evidenced by significant fork activity)"
-    }
+        "stars_growth": 117,
+        "forks": 25,
+        "watchers": 117,
+        "issue_resolution_rate": "N/A",
+        "pr_merge_rate": "N/A",
+        "maintainer_responsiveness": "N/A - No community interactions to measure"
+    },
+    "risk_factors": [
+        "Single maintainer dependency",
+        "No recent community engagement",
+        "Limited issue/PR activity",
+        "Last push was 5+ months ago"
+    ],
+    "strengths": [
+        "Good star-to-fork ratio (4.7:1)",
+        "Clear documentation and structure",
+        "Modular architecture design",
+        "MIT license for open collaboration"
+    ],
+    "recommendations": [
+        "Encourage community issue reporting",
+        "Establish contribution guidelines",
+        "Promote project to attract more contributors",
+        "Consider adding community discussion forums"
+    ]
 }

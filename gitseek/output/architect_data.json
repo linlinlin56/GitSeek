@@ -1,201 +1,145 @@
 {
     "structure": {
-        "root": {
-            "name": "TradingAgents-CN",
-            "type": "directory",
-            "items": [
-                {
-                    "name": "app",
-                    "type": "directory",
-                    "description": "FastAPI后端应用核心目录",
-                    "subdirectories": [
-                        "core", "middleware", "models", "routers", "services", "utils", "worker"
-                    ]
-                },
-                {
-                    "name": "frontend",
-                    "type": "directory", 
-                    "description": "Vue.js前端应用",
-                    "subdirectories": [
-                        "src/api", "src/components", "src/views", "src/stores", "src/utils"
-                    ]
-                },
-                {
-                    "name": "tradingagents",
-                    "type": "directory",
-                    "description": "核心交易智能体库",
-                    "subdirectories": [
-                        "agents", "config", "dataflows", "graph", "llm_adapters", "tools"
-                    ]
-                },
-                {
-                    "name": "scripts",
-                    "type": "directory",
-                    "description": "部署和维护脚本",
-                    "subdirectories": [
-                        "deployment", "setup", "maintenance", "debug", "test"
-                    ]
-                },
-                {
-                    "name": "docs",
-                    "type": "directory",
-                    "description": "项目文档",
-                    "subdirectories": [
-                        "architecture", "configuration", "deployment", "guides"
-                    ]
-                },
-                {
-                    "name": "config",
-                    "type": "directory",
-                    "description": "配置文件目录"
-                },
-                {
-                    "name": "data",
-                    "type": "directory",
-                    "description": "数据存储目录"
-                },
-                {
-                    "name": "examples",
-                    "type": "directory",
-                    "description": "使用示例"
-                },
-                {
-                    "name": "tests",
-                    "type": "directory",
-                    "description": "测试文件"
+        "root": "data_analysis_agent",
+        "directories": {
+            "config": {
+                "description": "配置管理模块",
+                "files": ["llm_config.py", "__init__.py"]
+            },
+            "utils": {
+                "description": "工具函数和辅助模块",
+                "files": [
+                    "code_executor.py",
+                    "create_session_dir.py", 
+                    "extract_code.py",
+                    "fallback_openai_client.py",
+                    "format_execution_result.py",
+                    "llm_helper.py",
+                    "__init__.py"
+                ]
+            },
+            "assets": {
+                "description": "静态资源文件",
+                "subdirectories": {
+                    "images": ["40d04b1dc21848cf9eeac4b50551f2a1.png", "d24d6dd97279a27fd8c9d652bac1fdb2.png"]
                 }
-            ]
+            },
+            ".git": {
+                "description": "Git版本控制目录"
+            }
+        },
+        "files": {
+            "data_analysis_agent.py": "核心智能体类，实现数据分析的主要逻辑",
+            "main.py": "应用程序入口点",
+            "prompts.py": "系统提示词和对话模板",
+            "requirements.txt": "Python依赖包清单",
+            "README.md": "项目文档",
+            "LICENSE": "MIT许可证文件",
+            ".env.example": "环境变量示例文件",
+            ".gitignore": "Git忽略文件配置",
+            "贵州茅台利润表.csv": "示例数据文件"
         }
     },
     "core_directories": [
-        "app",
-        "frontend", 
-        "tradingagents",
-        "scripts",
-        "config",
-        "data"
+        {
+            "name": "config",
+            "purpose": "配置管理，包含LLM配置类",
+            "key_files": ["llm_config.py"]
+        },
+        {
+            "name": "utils", 
+            "purpose": "工具函数模块，提供代码执行、会话管理、LLM交互等辅助功能",
+            "key_files": [
+                "code_executor.py",
+                "llm_helper.py", 
+                "fallback_openai_client.py",
+                "extract_code.py"
+            ]
+        }
     ],
     "config_files": [
-        "pyproject.toml",
-        "requirements.txt",
-        "docker-compose.yml",
-        "Dockerfile.backend",
-        "Dockerfile.frontend",
-        "frontend/package.json",
-        "frontend/tsconfig.json",
-        "frontend/vite.config.ts",
-        "config/logging.toml",
-        ".env.example"
+        {
+            "name": "requirements.txt",
+            "type": "Python依赖配置",
+            "purpose": "定义项目运行所需的所有Python包和版本"
+        },
+        {
+            "name": "llm_config.py", 
+            "type": "LLM配置类",
+            "purpose": "管理大语言模型的配置参数，支持OpenAI等提供商"
+        },
+        {
+            "name": ".env.example",
+            "type": "环境变量模板",
+            "purpose": "提供环境变量配置示例"
+        }
     ],
     "dependencies": {
-        "backend": {
-            "framework": [
-                "fastapi>=0.104.0",
-                "uvicorn[standard]>=0.24.0",
-                "pydantic>=2.0.0",
-                "pydantic-settings>=2.0.0"
-            ],
-            "database": [
-                "motor>=3.3.0",
-                "pymongo>=4.0.0",
-                "redis>=6.2.0"
-            ],
-            "authentication": [
-                "PyJWT>=2.0.0",
-                "bcrypt>=4.0.0"
-            ],
-            "scheduling": [
-                "apscheduler>=3.10.0"
-            ],
-            "data_sources": [
-                "akshare>=1.16.98",
-                "tushare>=1.4.21",
-                "baostock>=0.8.8",
-                "finnhub-python>=2.4.23",
-                "yfinance>=0.2.63"
-            ],
-            "ai_llm": [
-                "openai>=1.0.0,<2.0.0",
-                "langchain-openai>=0.1.0",
-                "langchain-google-genai>=2.1.12",
-                "google-genai>=0.1.0",
-                "dashscope"
-            ],
-            "data_processing": [
-                "pandas",
-                "stockstats>=0.6.5",
-                "backtrader>=1.9.78.123"
-            ],
-            "reporting": [
-                "markdown>=3.4.0",
-                "pypandoc>=1.11",
-                "python-docx>=0.8.11",
-                "pdfkit>=1.0.0"
-            ]
-        },
-        "frontend": {
-            "framework": [
-                "vue@^3.4.0",
-                "vue-router@^4.2.5",
-                "pinia@^2.1.7"
-            ],
-            "ui_components": [
-                "element-plus@^2.4.4",
-                "@element-plus/icons-vue@^2.3.1"
-            ],
-            "charts": [
-                "echarts@^5.4.3",
-                "vue-echarts@^6.6.1"
-            ],
-            "utilities": [
-                "axios@^1.6.2",
-                "dayjs@^1.11.10",
-                "lodash-es@^4.17.21",
-                "marked@^16.2.0"
-            ],
-            "development": [
-                "typescript@~5.3.3",
-                "vite",
-                "@vitejs/plugin-vue@^5.0.4"
-            ]
-        },
-        "infrastructure": {
-            "containerization": [
-                "Docker",
-                "docker-compose"
-            ],
-            "databases": [
-                "MongoDB",
-                "Redis"
-            ]
-        }
-    },
-    "architecture_analysis": {
-        "design_patterns": [
-            "Microservices Architecture",
-            "Multi-Agent System",
-            "Event-Driven Architecture",
-            "Repository Pattern",
-            "Service Layer Pattern"
+        "data_analysis_libraries": [
+            "pandas>=2.0.0",
+            "numpy>=1.24.0", 
+            "matplotlib>=3.6.0",
+            "duckdb>=0.8.0",
+            "scipy>=1.10.0",
+            "scikit-learn>=1.3.0"
         ],
-        "core_modules": {
-            "api_layer": "FastAPI RESTful API with SSE support",
-            "agent_system": "Multi-agent trading system with specialized roles",
-            "data_processing": "Unified data source management with fallback mechanisms",
-            "llm_integration": "Multi-provider LLM adapter system",
-            "caching": "Multi-layer caching (Redis, MongoDB, file-based)",
-            "scheduling": "APScheduler for task management"
-        },
-        "deployment": {
-            "containerized": true,
-            "multi_arch_support": true,
-            "service_architecture": "Backend + Frontend + MongoDB + Redis",
-            "port_configuration": {
-                "backend": 8000,
-                "frontend": 3000,
-                "mongodb": 27017,
-                "redis": 6379
+        "visualization": [
+            "plotly>=5.14.0"
+        ],
+        "ai_llm": [
+            "openai>=1.0.0",
+            "pyyaml>=6.0"
+        ],
+        "web_api": [
+            "requests>=2.28.0",
+            "urllib3>=1.26.0"
+        ],
+        "development": [
+            "ipython>=8.10.0",
+            "jupyter>=1.0.0",
+            "python-dotenv>=1.0.0",
+            "asyncio-mqtt>=0.11.1",
+            "python-docx>=0.8.11",
+            "pathlib2>=2.3.7",
+            "typing-extensions>=4.5.0",
+            "pytest>=7.0.0",
+            "pytest-asyncio>=0.21.0",
+            "black>=23.0.0",
+            "flake8>=6.0.0",
+            "fonttools>=4.38.0"
+        ]
+    },
+    "architecture_pattern": {
+        "pattern": "模块化智能体架构",
+        "description": "项目采用模块化设计，核心智能体类(DataAnalysisAgent)协调各个功能模块，遵循单一职责原则",
+        "components": {
+            "main_agent": {
+                "file": "data_analysis_agent.py",
+                "responsibility": "核心智能体，管理对话流程、代码生成和执行"
+            },
+            "llm_integration": {
+                "module": "utils/llm_helper.py",
+                "responsibility": "LLM交互封装，处理API调用和响应解析"
+            },
+            "code_execution": {
+                "module": "utils/code_executor.py", 
+                "responsibility": "安全执行生成的Python代码"
+            },
+            "configuration": {
+                "module": "config/llm_config.py",
+                "responsibility": "集中管理LLM配置参数"
+            },
+            "session_management": {
+                "module": "utils/create_session_dir.py",
+                "responsibility": "创建和管理分析会话目录"
             }
         }
+    },
+    "environment_configuration": {
+        "runtime": "Python环境",
+        "llm_provider": "OpenAI (支持其他提供商)",
+        "session_management": "基于UUID的隔离会话目录",
+        "output_format": "YAML结构化响应",
+        "visualization": "Matplotlib + Plotly，支持中文显示"
     }
 }
