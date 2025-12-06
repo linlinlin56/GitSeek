@@ -1,0 +1,57 @@
+{
+    "issues": {
+        "total_count": 0,
+        "open_issues": 0,
+        "closed_issues": 0,
+        "recent_issues": [],
+        "issue_types": {
+            "bug": 0,
+            "feature": 0,
+            "question": 0,
+            "enhancement": 0
+        },
+        "trend_analysis": "No community issues reported, suggesting either stable codebase or limited community engagement"
+    },
+    "prs": {
+        "total_count": 0,
+        "open_prs": 0,
+        "merged_prs": 0,
+        "recent_prs": [],
+        "pr_activity": "No recent pull request activity detected"
+    },
+    "contributors": {
+        "total_contributors": 1,
+        "main_contributor": "li-xiu-qi",
+        "contributor_activity": {
+            "li-xiu-qi": {
+                "contributions": "Primary author and maintainer",
+                "last_activity": "2025-06-06",
+                "activity_level": "Initial development only"
+            }
+        },
+        "community_participation": "Single contributor project with no external contributions"
+    },
+    "health_score": 45,
+    "activity_level": "Low Activity",
+    "community_metrics": {
+        "stars": 117,
+        "forks": 25,
+        "watchers": 117,
+        "response_efficiency": "N/A - No community issues to respond to",
+        "issue_resolution_rate": "N/A - No issues reported",
+        "development_velocity": "Stalled - No commits since initial push on 2025-06-06",
+        "community_growth": "Limited - No recent activity or community engagement"
+    },
+    "trend_analysis": {
+        "focus_areas": "Initial LLM-based data analysis agent development",
+        "community_engagement": "Very low - No issues, PRs, or discussions",
+        "project_momentum": "Stalled - No development activity for 5+ months",
+        "maintenance_status": "Minimal maintenance - Repository appears to be in initial release state"
+    },
+    "recommendations": [
+        "Encourage community engagement through issue templates and contribution guidelines",
+        "Consider adding documentation for community contributions",
+        "Monitor for potential community interest given the 117 stars and 25 forks",
+        "Plan for project maintenance and community building strategies"
+    ]
+}

@@ -1,0 +1,44 @@
+```json
+[
+  {
+    "question": "这个项目的主要功能是什么？",
+    "answer": "这是一个基于LLM的智能数据分析智能体（Data Analysis Agent），能够自动化处理数据分析任务。根据项目描述，它是一个基于大语言模型的智能数据分析工具，核心功能包括数据加载、分析、可视化和报告生成。项目采用Agent模式设计，包含配置管理、代码执行器、LLM客户端等核心组件。"
+  },
+  {
+    "question": "项目使用什么编程语言开发？",
+    "answer": "项目使用Python语言开发。根据元数据分析，仓库的主要语言是Python，项目结构包含多个Python模块文件，包括data_analysis_agent.py、main.py、prompts.py等核心文件，以及config和utils目录下的Python模块。"
+  },
+  {
+    "question": "项目的依赖库有哪些？",
+    "answer": "项目依赖23个Python库，主要分为几个类别：数据分析类（pandas、numpy、matplotlib、duckdb、scipy、scikit-learn）、可视化类（plotly）、AI/LLM类（openai、pyyaml）、Web API类（requests、urllib3）、开发工具类（ipython、jupyter）、配置管理类（python-dotenv）、异步编程类（asyncio-mqtt）、文档处理类（python-docx）、系统工具类（pathlib2、typing-extensions）、测试工具类（pytest、pytest-asyncio、black、flake8）和字体工具类（fonttools）。"
+  },
+  {
+    "question": "项目的架构设计有什么特点？",
+    "answer": "项目采用模块化架构设计，主要设计模式包括：Agent Pattern（智能体模式）- 核心智能体逻辑处理数据分析工作流；Configuration Management Pattern（配置管理模式）- 使用dataclass进行配置管理；Helper/Utility Pattern（辅助工具模式）- utils目录提供工具函数；Dependency Injection（依赖注入）- 在核心组件中广泛使用依赖注入；MVC/MVP Pattern - 在客户端和配置模块中使用；Decorator Pattern（装饰器模式）- 在配置管理中使用装饰器。核心目录包括config、utils和assets。"
+  },
+  {
+    "question": "项目的代码质量如何？",
+    "answer": "项目整体代码质量为良好（Good），平均质量评分75分。优点包括良好的可读性（多个文件达到95-100分可读性评分），采用现代化的设计模式。主要问题包括：多个核心文件（data_analysis_agent.py、code_executor.py、fallback_openai_client.py）具有极高复杂度（复杂度评分58-66），存在超过50行的函数需要拆分，部分文件注释率低于5%，代码行长度超过120字符需要优化。"
+  },
+  {
+    "question": "项目的社区活跃度如何？",
+    "answer": "项目社区活跃度较低。根据社区动态分析，项目有117个星标和25个分支，但没有报告任何问题（issues）或拉取请求（pull requests）。项目只有一个主要贡献者（li-xiu-qi），自2025年6月6日初始推送后没有新的提交活动，开发处于停滞状态。健康评分为45分，活动级别为低活跃度。"
+  },
+  {
+    "question": "如何开始使用这个项目？",
+    "answer": "根据项目结构，使用步骤包括：1）克隆仓库；2）安装requirements.txt中的依赖库；3）配置环境变量（参考.env.example文件）；4）运行main.py作为程序入口点。项目提供了配置管理模块（config/llm_config.py）来管理LLM配置，utils目录包含代码执行器、LLM助手等工具组件。项目还包含示例数据文件（贵州茅台利润表.csv）用于测试。"
+  },
+  {
+    "question": "项目的主要核心文件有哪些？",
+    "answer": "项目的主要核心文件包括：data_analysis_agent.py（核心智能体逻辑，425行代码）、main.py（程序入口点，13行代码）、prompts.py（提示词管理，9272行代码）、utils/code_executor.py（代码执行器，295行代码）、utils/fallback_openai_client.py（LLM客户端，231行代码）、config/llm_config.py（配置管理，45行代码）。这些文件构成了项目的主要功能模块。"
+  },
+  {
+    "question": "项目使用什么许可证？",
+    "answer": "项目使用MIT License许可证。根据元数据分析，许可证文件（LICENSE）大小为1102字节，MIT许可证是一个宽松的开源许可证，允许用户自由使用、修改和分发软件，只需要保留原始版权声明。"
+  },
+  {
+    "question": "项目的维护状态如何？",
+    "answer": "项目维护状态为最小维护。项目在2025年6月6日创建并推送初始版本后，没有进一步的开发活动。虽然项目有117个星标显示了一定的社区兴趣，但没有社区贡献、问题报告或拉取请求。项目处于初始发布状态，建议用户注意项目的停滞开发状态，并考虑项目的长期维护计划。"
+  }
+]
+```

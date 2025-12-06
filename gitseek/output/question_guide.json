@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "personalized_questions": [
+    {
+      "question": "该项目的核心模块是什么？",
+      "category": "architecture"
+    },
+    {
+      "question": "项目的主要技术栈有哪些？",
+      "category": "tech_stack"
+    },
+    {
+      "question": "社区活跃度如何？",
+      "category": "community"
+    },
+    {
+      "question": "代码质量怎么样？",
+      "category": "code_quality"
+    },
+    {
+      "question": "适合初学者参与贡献吗？",
+      "category": "community"
+    }
+  ],
+  "follow_up_guides": [],
+  "question_categories": [
+    "has_high_stars",
+    "has_active_community",
+    "has_complex_architecture",
+    "has_quality_issues",
+    "has_recent_updates",
+    "is_beginner_friendly",
+    "has_detailed_docs"
+  ],
+  "total_questions": 5
+}

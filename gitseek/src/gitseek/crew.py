@@ -6,6 +6,7 @@ from .tools.FileContentReader import FileContentReader
 from .tools.FileSystemBrowser import FileSystemBrowser
 from .tools.LLMCodeSummarizer import LLMCodeSummarizer
 from .tools.ReportGenerator import ReportGenerator
+from .tools.SmartQuestionGuide import SmartQuestionGuide
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
 import os
@@ -20,9 +21,10 @@ class GitSeek():
     # 配置DeepSeek LLM
     llm = LLM(
         model="openai/deepseek-chat",
-        api_key=os.environ.get("sk-99491e7c88dc454e81aca34aad4278fd"),  # 建议使用环境变量
+        api_key=os.environ.get("sk-b5b107797ce14c5e9cb914ba8e7811e2"),  # 建议使用环境变量
         base_url="https://api.deepseek.com/v1",
     )
+
 
     @agent
     def scout_agent(self) -> Agent:
@@ -106,6 +108,39 @@ class GitSeek():
             verbose=True,
             llm=self.llm
         )
+    
+    @agent
+    def question_guide_agent(self) -> Agent:
+        """智能提问引导员 - 负责推荐高频问题和追问方向"""
+        guide_tool = SmartQuestionGuide()
+        
+        return Agent(
+            role="智能提问引导专家",
+            goal="基于GitHub仓库分析结果，智能推荐用户可能感兴趣的高频问题和追问方向",
+            backstory="""你是用户体验专家，擅长根据技术项目的特征预测用户的兴趣点。
+            你能快速理解项目特点，并生成有针对性的问题建议，帮助用户深入探索项目。""",
+            tools=[guide_tool],
+            verbose=True,
+            llm=self.llm
+    )
+    
+    
+    
+    @agent
+    def qa_agent(self) -> Agent:
+        """GitHub仓库问答专家 - 基于分析结果回答用户自然语言问题"""
+        return Agent(
+            role="GitHub仓库问答专家",
+            goal="""基于已完成的GitHub仓库分析结果（元数据、架构、代码质量、社区动态、完整报告），
+            准确生成并回答用户的自然语言问题""",
+            backstory="""你是精通技术分析与问答的专家，能自动从CrewAI记忆库中检索与用户问题相关的仓库分析信息，
+            无需手动查找报告文件。用清晰的自然语言提出问题并给出答案，必要时引用分析结果中的具体细节（如“根据架构分析，该项目核心目录为src/core”）""",
+            verbose=True,
+            llm=self.llm
+        )
+    
+    
+    
 
     # === 任务定义 ===
     
@@ -135,6 +170,7 @@ class GitSeek():
                 "metadata": {...},
                 "timestamp": "2025-11-16 10:00:00"
             }""",
+             output_file='output/scout_data.json'  # 输出到文件
         )
 
     @task
@@ -165,7 +201,8 @@ class GitSeek():
                 "config_files": [...],
                 "dependencies": {...}
             }""",
-            context=[self.scout_task()]
+            #context=[self.scout_task()]
+            output_file='output/architect_data.json'  # 输出到文件 
         )
 
     @task
@@ -198,7 +235,8 @@ class GitSeek():
                 "design_patterns": [...],
                 "recommendations": [...]
             }""",
-            context=[self.scout_task(),self.architect_task()]
+            #context=[self.scout_task(),self.architect_task()]
+            output_file='output/code_review_data.json'  # 输出到文件
         )
 
     @task
@@ -232,7 +270,8 @@ class GitSeek():
                 "health_score": 85,
                 "activity_level": "Highly Active"
             }""",
-            context=[self.scout_task()]
+            #context=[self.scout_task()]
+            output_file='output/community_data.json'  # 输出到文件
         )
 
     @task
@@ -246,6 +285,21 @@ class GitSeek():
             4. 基于报告内容自动生成Q&A训练数据集
             5. 创建针对项目特定问题的问答对
             6. 准备模型微调所需的数据格式
+
+             **重要：请先读取以下数据文件，基于真实数据生成报告：**
+        - output/scout_data.json：包含项目stars、forks、语言、描述等元数据
+        - output/architect_data.json：包含目录结构、核心模块、依赖关系
+        - output/code_review_data.json：包含代码质量评分、设计模式、复杂度分析
+        - output/community_data.json：包含issues、PR、贡献者、健康度数据
+        
+        **报告必须基于这些文件中的具体数据，不要使用占位符：**
+        1. 项目概览 - 使用scout_data中的具体stars/forks/语言数据
+        2. 架构评估 - 描述architect_data中的实际目录结构和依赖
+        3. 代码质量 - 引用code_review_data中的质量评分和审查发现  
+        4. 社区分析 - 包含community_data中的真实issues和PR统计
+        5. 总体建议 - 基于所有具体分析结果提出改进建议
+        
+        确保所有数据都是真实分析得到的，不要生成空报告。
             
             确保报告专业、完整、易读。""",
             agent=self.report_writer_agent(),
@@ -259,37 +313,103 @@ class GitSeek():
             3. 代码质量（质量评分、设计模式、复杂度）
             4. 社区分析（活跃度、贡献者、健康度）
             5. 总体建议（优势、改进、战略规划）""",
+            #context=[
+            #    self.scout_task(),
+            #    self.architect_task(), 
+            #    self.code_review_task(),
+            #    self.community_analysis_task()
+            #],
+            output_file='output/project_analysis_report.md'
+        )
+    
+    @task
+    def question_guide_task(self) -> Task:
+        """智能提问引导任务"""
+        return Task(
+            description="""基于对仓库 {repo_url} 的完整分析结果，为用户生成智能问题推荐：
+            1. 分析项目特征（流行度、活跃度、复杂度、新手友好度等）
+            2. 生成个性化问题推荐（15个左右高频问题）
+            3. 提供追问引导建议
+            4. 按类别组织问题（架构、代码、社区、入门等）
+            
+            确保问题具有针对性和实用性。""",
+            agent=self.question_guide_agent(),
+            expected_output="""智能问题推荐报告，包含：
+            - 个性化问题列表（按类别分组）
+            - 追问引导建议
+            - 问题分类统计
+            
+            输出格式:
+            {
+                "personalized_questions": [
+                    {"question": "问题内容", "category": "问题类别"},
+                    ...
+                ],
+                "follow_up_guides": [
+                    {"topic": "主题", "suggestions": ["建议1", "建议2"]},
+                    ...
+                ],
+                "question_categories": ["architecture", "community", ...],
+                "total_questions": 15
+            }""",
+            output_file='output/question_guide.json'
+        )
+    
+    
+    
+    @task
+    def qa_task(self) -> Task:
+        """基于仓库分析结果的多轮问答任务"""
+        return Task(
+            description="""整合所有分析结果，为项目 {repo_url} 生成一问一答式的问答数据集。
+            1. 提出10个项目使用者可能对项目产生的问题
+            2. 根据项目分析结果回答问题
+            3. 将问题和答案按“question”“answer”对的方式输出在json文件中。""",
+            agent=self.qa_agent(),
+            expected_output="""qa_dataset.json：自动生成的问答数据集""",
             context=[
                 self.scout_task(),
                 self.architect_task(), 
                 self.code_review_task(),
-                self.community_analysis_task()
+                self.community_analysis_task(),
             ],
-            output_file='output/project_analysis_report.md'
+            output_file='output/qa.json'
         )
+    
 
     @crew
     def crew(self) -> Crew:
         """创建GitHub分析团队"""
+        
         return Crew(
             agents=[
+
                 self.scout_agent(),
                 self.architect_agent(),
                 self.code_reviewer_agent(),
                 self.community_watcher_agent(),
-                self.report_writer_agent()
+                self.report_writer_agent(),
+                #self.qa_agent()  # 新增：添加问答智能体
+                self.question_guide_agent(),  # 新增引导智能体
+                self.qa_agent()
             ],
             tasks=[
                 self.scout_task(),
                 self.architect_task(),
                 self.code_review_task(),
                 self.community_analysis_task(),
-                self.report_generation_task()
+                self.report_generation_task(),
+                self.question_guide_task(),   # 新增引导任务
+                self.qa_task()
             ],
             process=Process.sequential,
             verbose=True,
+            #memory=True,
             memory=False,
             share_crew=True,
             # 确保任务输出可以在agents间共享
-            full_output=True
+            full_output=True,
+            # 3. 传入自定义的 ChromaDB 客户端（强制使用我们的嵌入函数）
+            #rag_client=chroma_client
         )
+    
